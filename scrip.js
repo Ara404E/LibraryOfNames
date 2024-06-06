@@ -1,6 +1,5 @@
-
 (function(){
-    peopleModule={
+    window.peopleModule={
         people:[],
         init : function(){
             this.domCache();
@@ -27,13 +26,36 @@
     },
         displayName: function(){
             this.ol.innerHTML='';
-            this.people.forEach( name =>{
+            this.people.forEach(( name , index) =>{
                 const li=document.createElement('li');
                 li.classList.add('new-name');
-                li.textContent=name;
-                this.ol.append(li);
+                const span=document.createElement('span');
+                const crossIcon=document.createTextNode('×');
+                 span.classList.add('remove-name')
+                 span.dataset.index=index;  // store the index in a data attribute
+                 li.textContent+= ' ' + name;
+                 const div=document.createElement('div')
+                 div.classList.add('li-div')
+                 this.ol.append(div);
+                 div.append(li);
+                 span.append(crossIcon)
+                 li.append(span);
+            });
+            this.bindRemoveEvents();
+        },
+        bindRemoveEvents: function(){
+            const spans = document.querySelectorAll('.remove-name');
+        spans.forEach( span =>{
+                span.addEventListener('click' , this.removeName.bind(this));
             });
         },
-    }
-    peopleModule.init();
+        
+removeName: function(event) {
+    const span=event.target.closest('.remove-name');
+    const index=span.dataset.index;
+    peopleModule.people.splice(index,1);
+    this.displayName();
+  },
+}
+        peopleModule.init();
 })();
